@@ -29,7 +29,7 @@ type ClientSettings struct {
 	MaxUsers                    int                `json:"max_users" bson:"max_users"`
 	PuffinGeoAddress            string             `json:"puffin_geo_address" bson:"puffin_geo_address"`
 	PuffinKYCAddress            string             `json:"puffin_kyc_address" bson:"puffin_kyc_address"`
-	PuffinCoreAddress           string             `json:"puffin_core_address" bson:"puffin_core_address"`
+	PuffinClientAddress         string             `json:"puffin_client_address" bson:"puffin_client_address"`
 	AdminWalletAddress          string             `json:"admin_wallet_address" bson:"admin_wallet_address"`
 	UUID                        int                `json:"UUID" bson:"UUID"`
 	Status                      string             `json:"status" bson:"status"`

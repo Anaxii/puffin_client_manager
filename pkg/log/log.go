@@ -13,7 +13,6 @@ func SetupLogs() {
 		fmt.Printf("error opening file: %v", err)
 	}
 
-	//defer f.Close()
 	mw := io.MultiWriter(os.Stdout, f)
 	log.SetOutput(mw)
 	log.SetFormatter(&log.TextFormatter{ForceColors: true, FullTimestamp: true})
