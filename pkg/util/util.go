@@ -5,6 +5,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	log "github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -26,4 +27,13 @@ func GenerateECDSAKey(pkey string) (string, *ecdsa.PrivateKey) {
 	_privateKey := privateKey
 
 	return _publicKey, _privateKey
+}
+
+func GetOID(id string) (primitive.ObjectID, error) {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.WithFields(log.Fields{"error": err.Error(), "file": "Util:GetOID"}).Error("Failed to convert id string to primitive.ObjectID")
+		return primitive.ObjectID{}, err
+	}
+	return oid, err
 }
