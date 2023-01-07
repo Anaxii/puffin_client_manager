@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/sha3"
+	"time"
 )
 
 func GenerateECDSAKey(pkey string) (string, *ecdsa.PrivateKey) {
@@ -36,4 +37,8 @@ func GetOID(id string) (primitive.ObjectID, error) {
 		return primitive.ObjectID{}, err
 	}
 	return oid, err
+}
+
+func SecondsTicker(seconds int) *time.Ticker {
+	return time.NewTicker(time.Second * time.Duration(seconds-time.Now().Second()))
 }

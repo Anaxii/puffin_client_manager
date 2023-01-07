@@ -16,9 +16,8 @@ func StartAPI(port string) {
 
 	r := mux.NewRouter().StrictSlash(true)
 
-	r.HandleFunc("/removeCountry", removeCountry).Methods("POST")
-	r.HandleFunc("/addCountry", addCountry).Methods("POST")
-	r.HandleFunc("/countries", countries).Methods("GET")
+	r.HandleFunc("/newClient", newClient).Methods("POST")
+	r.HandleFunc("/updateCountry", updateCountry).Methods("POST")
 	r.HandleFunc("/paymentExpiration", paymentExpiration).Methods("GET")
 
 	r.Use(mux.CORSMethodMiddleware(r))
