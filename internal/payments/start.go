@@ -1,10 +1,14 @@
 package payments
 
 import (
+	ethABI "github.com/ethereum/go-ethereum/accounts/abi"
+	"github.com/ethereum/go-ethereum/core/types"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"puffin_client_manager/internal/database"
+	"puffin_client_manager/pkg/abi"
 	"puffin_client_manager/pkg/global"
+	"strings"
 )
 
 type PaymentsHandler struct {
@@ -61,18 +65,21 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 		go ListenForEvents(v.WSURL, v.UUID, v.PuffinClientAddress, event)
 	}
 
+	clientABI, _ := ethABI.JSON(strings.NewReader(abi.PuffinClientABI))
+
 	for {
 		select {
 		case e := <-event:
-			//data, method, err := events.FindEvent([]types.Log{vLog.Log}, h.BridgeABI)
-			//if err != nil {
-			//	log.WithFields(log.Fields{"err": err}).Info("Unable to parse event")
-			//}
+			data, method, err := findEvent([]types.Log{e.Log}, clientABI)
+			if err != nil {
+				log.WithFields(log.Fields{"err": err}).Info("Unable to parse event")
+			}
+			log.Println(data, method)
 			//h.handleEvent(data, method, vLog.Network)
 			//if len(h.BridgeQueue) == 0 {
 			//	db.Write([]byte("block"), []byte(vLog.Network.Name), []byte(fmt.Sprintf("%v", vLog.Log.BlockNumber)))
 			//}
-			log.Println(e)
+			//log.Println(e)
 		}
 	}
 }
