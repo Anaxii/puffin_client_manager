@@ -9,6 +9,7 @@ import (
 	"puffin_client_manager/pkg/abi"
 	"puffin_client_manager/pkg/global"
 	"strings"
+	"time"
 )
 
 type PaymentsHandler struct {
@@ -33,31 +34,8 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	go p.DB.ClientStream(clientChanges)
 	go p.handleClientChanges(clientChanges, &listeners)
 
-	// frequently check for new/removed clients
-	// handle clients that are running but no longer need to be
-	// create list of networks and append smart contracts and UUID to it
-
 	event := make(chan PaymentsLog)
-	//
-	//go h.handleQueue()
-	//
-	//go func() {
-	//	ticker := time.NewTicker(15 * time.Second)
-	//	x := 3
-	//	for range ticker.C {
-	//		for _, v := range config.NetworksMap {
-	//			h.updateLastBlock(v, x)
-	//		}
-	//		h.updateLastBlock(config.Subnet, x)
-	//
-	//		if x == 3 {
-	//			x = 0
-	//		} else {
-	//			x++
-	//		}
-	//	}
-	//}()
-	//
+
 	log.Info("Starting event listeners")
 	for _, v := range listeners {
 		go ListenForEvents(v.WSURL, v.UUID, v.PuffinClientAddress, event)
@@ -68,16 +46,25 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	for {
 		select {
 		case e := <-event:
-			data, method, err := findEvent([]types.Log{e.Log}, clientABI)
+			_, ok := listeners[e.ClientUUID]
+			if !ok {
+				continue
+			}
+			_, method, err := findEvent([]types.Log{e.Log}, clientABI)
 			if err != nil {
 				log.WithFields(log.Fields{"err": err}).Info("Unable to parse event")
 			}
-			log.Println(data, method)
-			//h.handleEvent(data, method, vLog.Network)
-			//if len(h.BridgeQueue) == 0 {
-			//	db.Write([]byte("block"), []byte(vLog.Network.Name), []byte(fmt.Sprintf("%v", vLog.Log.BlockNumber)))
-			//}
-			//log.Println(e)
+
+			if method == "NewPayment" {
+				temp := listeners[e.ClientUUID]
+				increment := 28 * 24 * int(time.Hour.Seconds())
+				temp.PaymentExpiration += increment
+				listeners[e.ClientUUID] = temp
+				err = p.DB.UpdateClientSettings(e.ClientUUID, "payment_expiration", listeners[e.ClientUUID])
+				if err != nil {
+					log.WithFields(log.Fields{"error": err}).Error("Error updating client settings payment_expiration")
+				}
+			}
 		}
 	}
 }
@@ -103,7 +90,7 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 					if updatedClient.Status == "inactive" {
 						log.Println("Client now inactive")
 						// stop listener
-						delete((*listeners), c.UUID)
+						delete(*listeners, c.UUID)
 
 					} else if updatedClient.Status == "active" {
 						log.Println("client now active")
@@ -125,30 +112,3 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 	}
 }
 
-//func (h *Handler) updateLastBlock(v config.Networks, x int) {
-//	walletBlock, _ := wallet.Block(v)
-//	h.Blocks[v.Name] = int(walletBlock.Int64())
-//	if walletBlock.Int64() > 0 {
-//		if len(h.BridgeQueue) == 0 {
-//			log.WithFields(log.Fields{
-//				"block":   walletBlock.Int64(),
-//				"network": v.Name,
-//			}).Info("Updated last synced block")
-//
-//			if x == 3 {
-//				go api.Log(LogHistory{Status: "Updated last synced block", Message: "lastBlock", Log: BridgeRequest{Block: walletBlock.Int64(), NetworkIn: v}, Timestamp: time.Now().Unix()})
-//			}
-//
-//			db.Write([]byte("block"), []byte(v.Name), []byte(fmt.Sprintf("%v", walletBlock.Int64())))
-//		} else {
-//			log.WithFields(log.Fields{
-//				"block":      walletBlock.Int64(),
-//				"queue_size": len(h.BridgeQueue),
-//				"network":    v.Name,
-//			}).Info("Last block")
-//			for _, v := range h.BridgeQueue {
-//				log.Info(v.Method)
-//			}
-//		}
-//	}
-//}

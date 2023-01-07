@@ -77,7 +77,6 @@ func (d *Database) GetOneClient(id primitive.ObjectID) (global.ClientSettings, e
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(d.DBURI))
 	if err != nil {
-		//log.WithFields(log.Fields{"error": err.Error(), "file": "Database:GetOneClient"}).Error("Failed to connect to mongodb client")
 		return global.ClientSettings{}, err
 	}
 	defer client.Disconnect(ctx)
@@ -87,8 +86,24 @@ func (d *Database) GetOneClient(id primitive.ObjectID) (global.ClientSettings, e
 	var result global.ClientSettings
 	err = request.Decode(&result)
 	if err != nil {
-		//log.WithFields(log.Fields{"error": err.Error(), "file": "Database:GetOneClient"}).Warn("Failed to decode verification results")
 		return global.ClientSettings{}, err
 	}
 	return result, nil
+}
+
+func (d *Database) UpdateClientSettings(uuid int, key string, val interface{}) error {
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(d.DBURI))
+	if err != nil {
+		return err
+	}
+	defer client.Disconnect(ctx)
+
+	settings := client.Database("puffin_clients").Collection("settings")
+	filter := bson.D{{"UUID", uuid}}
+	update := bson.D{{"$set", bson.D{{key, val}}}}
+	_, err = settings.UpdateOne(context.TODO(), filter, update)
+
+	return err
 }

@@ -14,8 +14,8 @@ var signatures = map[string]string{
 	logNewPayment.Hex(): "NewPayment",
 }
 
-func findEvent(logs []types.Log, abi ethABI.ABI) (interface{}, string, error) {
-	var data interface{}
+func findEvent(logs []types.Log, abi ethABI.ABI) (map[string]interface{}, string, error) {
+	var data map[string]interface{}
 	var err error
 	method := ""
 	for _, vLog := range logs {
