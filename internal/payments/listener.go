@@ -43,6 +43,7 @@ func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, even
 		for {
 			select {
 			case ev := <-event:
+				log.Println(ev.Data)
 				events <- PaymentsLog{ClientUUID: clientUUID, Log: ev}
 			}
 		}

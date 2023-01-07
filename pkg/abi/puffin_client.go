@@ -30,7 +30,7 @@ var (
 
 // PuffinClientMetaData contains all meta data concerning the PuffinClient contract.
 var PuffinClientMetaData = &bind.MetaData{
-	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"epoch\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"users\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_usdcPerUser\",\"type\":\"uint256\"}],\"name\":\"NewEpoch\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"epoch\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"users\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_usdcPerUser\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"totalPaid\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"remainingBalance\",\"type\":\"uint256\"}],\"name\":\"NewPayment\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"calculatePayout\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_payToAddress\",\"type\":\"address\"}],\"name\":\"changePayToAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_usdc\",\"type\":\"address\"}],\"name\":\"changeUSDC\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_usdPerUser\",\"type\":\"uint256\"}],\"name\":\"changeUSDPerUser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"delUser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"epoch\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"epochUsers\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isCurrent\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"}],\"name\":\"newUser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"nextEpoch\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"payToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"payout\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"usdc\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"usdcPerUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_token\",\"type\":\"address\"}],\"name\":\"changePaymentToken\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_payToAddress\",\"type\":\"address\"}],\"name\":\"changePayToAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_paymentTokenPerUser\",\"type\":\"uint256\"}],\"name\":\"changeTokensPerUser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"epoch\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"users\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_usdcPerUser\",\"type\":\"uint256\"}],\"name\":\"NewEpoch\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"epoch\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"users\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_usdcPerUser\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"totalPaid\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"remainingBalance\",\"type\":\"uint256\"}],\"name\":\"NewPayment\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"nextEpoch\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"payout\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_contract\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"status\",\"type\":\"bool\"}],\"name\":\"setUsers\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"calculatePayout\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"epoch\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"epochUsers\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"isCurrent\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"isUsersAddressActive\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentToken\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paymentTokenPerUser\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"payToAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"userContracts\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // PuffinClientABI is the input ABI used to generate the binding from.
@@ -303,6 +303,37 @@ func (_PuffinClient *PuffinClientCallerSession) IsCurrent() (bool, error) {
 	return _PuffinClient.Contract.IsCurrent(&_PuffinClient.CallOpts)
 }
 
+// IsUsersAddressActive is a free data retrieval call binding the contract method 0x4723b9c0.
+//
+// Solidity: function isUsersAddressActive(address ) view returns(bool)
+func (_PuffinClient *PuffinClientCaller) IsUsersAddressActive(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
+	var out []interface{}
+	err := _PuffinClient.contract.Call(opts, &out, "isUsersAddressActive", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
+}
+
+// IsUsersAddressActive is a free data retrieval call binding the contract method 0x4723b9c0.
+//
+// Solidity: function isUsersAddressActive(address ) view returns(bool)
+func (_PuffinClient *PuffinClientSession) IsUsersAddressActive(arg0 common.Address) (bool, error) {
+	return _PuffinClient.Contract.IsUsersAddressActive(&_PuffinClient.CallOpts, arg0)
+}
+
+// IsUsersAddressActive is a free data retrieval call binding the contract method 0x4723b9c0.
+//
+// Solidity: function isUsersAddressActive(address ) view returns(bool)
+func (_PuffinClient *PuffinClientCallerSession) IsUsersAddressActive(arg0 common.Address) (bool, error) {
+	return _PuffinClient.Contract.IsUsersAddressActive(&_PuffinClient.CallOpts, arg0)
+}
+
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
 // Solidity: function owner() view returns(address)
@@ -365,12 +396,12 @@ func (_PuffinClient *PuffinClientCallerSession) PayToAddress() (common.Address, 
 	return _PuffinClient.Contract.PayToAddress(&_PuffinClient.CallOpts)
 }
 
-// Usdc is a free data retrieval call binding the contract method 0x3e413bee.
+// PaymentToken is a free data retrieval call binding the contract method 0x3013ce29.
 //
-// Solidity: function usdc() view returns(address)
-func (_PuffinClient *PuffinClientCaller) Usdc(opts *bind.CallOpts) (common.Address, error) {
+// Solidity: function paymentToken() view returns(address)
+func (_PuffinClient *PuffinClientCaller) PaymentToken(opts *bind.CallOpts) (common.Address, error) {
 	var out []interface{}
-	err := _PuffinClient.contract.Call(opts, &out, "usdc")
+	err := _PuffinClient.contract.Call(opts, &out, "paymentToken")
 
 	if err != nil {
 		return *new(common.Address), err
@@ -382,26 +413,26 @@ func (_PuffinClient *PuffinClientCaller) Usdc(opts *bind.CallOpts) (common.Addre
 
 }
 
-// Usdc is a free data retrieval call binding the contract method 0x3e413bee.
+// PaymentToken is a free data retrieval call binding the contract method 0x3013ce29.
 //
-// Solidity: function usdc() view returns(address)
-func (_PuffinClient *PuffinClientSession) Usdc() (common.Address, error) {
-	return _PuffinClient.Contract.Usdc(&_PuffinClient.CallOpts)
+// Solidity: function paymentToken() view returns(address)
+func (_PuffinClient *PuffinClientSession) PaymentToken() (common.Address, error) {
+	return _PuffinClient.Contract.PaymentToken(&_PuffinClient.CallOpts)
 }
 
-// Usdc is a free data retrieval call binding the contract method 0x3e413bee.
+// PaymentToken is a free data retrieval call binding the contract method 0x3013ce29.
 //
-// Solidity: function usdc() view returns(address)
-func (_PuffinClient *PuffinClientCallerSession) Usdc() (common.Address, error) {
-	return _PuffinClient.Contract.Usdc(&_PuffinClient.CallOpts)
+// Solidity: function paymentToken() view returns(address)
+func (_PuffinClient *PuffinClientCallerSession) PaymentToken() (common.Address, error) {
+	return _PuffinClient.Contract.PaymentToken(&_PuffinClient.CallOpts)
 }
 
-// UsdcPerUser is a free data retrieval call binding the contract method 0xbd8be057.
+// PaymentTokenPerUser is a free data retrieval call binding the contract method 0x19a18205.
 //
-// Solidity: function usdcPerUser() view returns(uint256)
-func (_PuffinClient *PuffinClientCaller) UsdcPerUser(opts *bind.CallOpts) (*big.Int, error) {
+// Solidity: function paymentTokenPerUser() view returns(uint256)
+func (_PuffinClient *PuffinClientCaller) PaymentTokenPerUser(opts *bind.CallOpts) (*big.Int, error) {
 	var out []interface{}
-	err := _PuffinClient.contract.Call(opts, &out, "usdcPerUser")
+	err := _PuffinClient.contract.Call(opts, &out, "paymentTokenPerUser")
 
 	if err != nil {
 		return *new(*big.Int), err
@@ -413,18 +444,49 @@ func (_PuffinClient *PuffinClientCaller) UsdcPerUser(opts *bind.CallOpts) (*big.
 
 }
 
-// UsdcPerUser is a free data retrieval call binding the contract method 0xbd8be057.
+// PaymentTokenPerUser is a free data retrieval call binding the contract method 0x19a18205.
 //
-// Solidity: function usdcPerUser() view returns(uint256)
-func (_PuffinClient *PuffinClientSession) UsdcPerUser() (*big.Int, error) {
-	return _PuffinClient.Contract.UsdcPerUser(&_PuffinClient.CallOpts)
+// Solidity: function paymentTokenPerUser() view returns(uint256)
+func (_PuffinClient *PuffinClientSession) PaymentTokenPerUser() (*big.Int, error) {
+	return _PuffinClient.Contract.PaymentTokenPerUser(&_PuffinClient.CallOpts)
 }
 
-// UsdcPerUser is a free data retrieval call binding the contract method 0xbd8be057.
+// PaymentTokenPerUser is a free data retrieval call binding the contract method 0x19a18205.
 //
-// Solidity: function usdcPerUser() view returns(uint256)
-func (_PuffinClient *PuffinClientCallerSession) UsdcPerUser() (*big.Int, error) {
-	return _PuffinClient.Contract.UsdcPerUser(&_PuffinClient.CallOpts)
+// Solidity: function paymentTokenPerUser() view returns(uint256)
+func (_PuffinClient *PuffinClientCallerSession) PaymentTokenPerUser() (*big.Int, error) {
+	return _PuffinClient.Contract.PaymentTokenPerUser(&_PuffinClient.CallOpts)
+}
+
+// UserContracts is a free data retrieval call binding the contract method 0xcd93c74d.
+//
+// Solidity: function userContracts(uint256 ) view returns(address)
+func (_PuffinClient *PuffinClientCaller) UserContracts(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
+	var out []interface{}
+	err := _PuffinClient.contract.Call(opts, &out, "userContracts", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// UserContracts is a free data retrieval call binding the contract method 0xcd93c74d.
+//
+// Solidity: function userContracts(uint256 ) view returns(address)
+func (_PuffinClient *PuffinClientSession) UserContracts(arg0 *big.Int) (common.Address, error) {
+	return _PuffinClient.Contract.UserContracts(&_PuffinClient.CallOpts, arg0)
+}
+
+// UserContracts is a free data retrieval call binding the contract method 0xcd93c74d.
+//
+// Solidity: function userContracts(uint256 ) view returns(address)
+func (_PuffinClient *PuffinClientCallerSession) UserContracts(arg0 *big.Int) (common.Address, error) {
+	return _PuffinClient.Contract.UserContracts(&_PuffinClient.CallOpts, arg0)
 }
 
 // ChangePayToAddress is a paid mutator transaction binding the contract method 0x5cb39e00.
@@ -448,88 +510,46 @@ func (_PuffinClient *PuffinClientTransactorSession) ChangePayToAddress(_payToAdd
 	return _PuffinClient.Contract.ChangePayToAddress(&_PuffinClient.TransactOpts, _payToAddress)
 }
 
-// ChangeUSDC is a paid mutator transaction binding the contract method 0x1ff415d9.
+// ChangePaymentToken is a paid mutator transaction binding the contract method 0x4558d717.
 //
-// Solidity: function changeUSDC(address _usdc) returns()
-func (_PuffinClient *PuffinClientTransactor) ChangeUSDC(opts *bind.TransactOpts, _usdc common.Address) (*types.Transaction, error) {
-	return _PuffinClient.contract.Transact(opts, "changeUSDC", _usdc)
+// Solidity: function changePaymentToken(address _token) returns()
+func (_PuffinClient *PuffinClientTransactor) ChangePaymentToken(opts *bind.TransactOpts, _token common.Address) (*types.Transaction, error) {
+	return _PuffinClient.contract.Transact(opts, "changePaymentToken", _token)
 }
 
-// ChangeUSDC is a paid mutator transaction binding the contract method 0x1ff415d9.
+// ChangePaymentToken is a paid mutator transaction binding the contract method 0x4558d717.
 //
-// Solidity: function changeUSDC(address _usdc) returns()
-func (_PuffinClient *PuffinClientSession) ChangeUSDC(_usdc common.Address) (*types.Transaction, error) {
-	return _PuffinClient.Contract.ChangeUSDC(&_PuffinClient.TransactOpts, _usdc)
+// Solidity: function changePaymentToken(address _token) returns()
+func (_PuffinClient *PuffinClientSession) ChangePaymentToken(_token common.Address) (*types.Transaction, error) {
+	return _PuffinClient.Contract.ChangePaymentToken(&_PuffinClient.TransactOpts, _token)
 }
 
-// ChangeUSDC is a paid mutator transaction binding the contract method 0x1ff415d9.
+// ChangePaymentToken is a paid mutator transaction binding the contract method 0x4558d717.
 //
-// Solidity: function changeUSDC(address _usdc) returns()
-func (_PuffinClient *PuffinClientTransactorSession) ChangeUSDC(_usdc common.Address) (*types.Transaction, error) {
-	return _PuffinClient.Contract.ChangeUSDC(&_PuffinClient.TransactOpts, _usdc)
+// Solidity: function changePaymentToken(address _token) returns()
+func (_PuffinClient *PuffinClientTransactorSession) ChangePaymentToken(_token common.Address) (*types.Transaction, error) {
+	return _PuffinClient.Contract.ChangePaymentToken(&_PuffinClient.TransactOpts, _token)
 }
 
-// ChangeUSDPerUser is a paid mutator transaction binding the contract method 0x9dde76fe.
+// ChangeTokensPerUser is a paid mutator transaction binding the contract method 0x3a0237ed.
 //
-// Solidity: function changeUSDPerUser(uint256 _usdPerUser) returns()
-func (_PuffinClient *PuffinClientTransactor) ChangeUSDPerUser(opts *bind.TransactOpts, _usdPerUser *big.Int) (*types.Transaction, error) {
-	return _PuffinClient.contract.Transact(opts, "changeUSDPerUser", _usdPerUser)
+// Solidity: function changeTokensPerUser(uint256 _paymentTokenPerUser) returns()
+func (_PuffinClient *PuffinClientTransactor) ChangeTokensPerUser(opts *bind.TransactOpts, _paymentTokenPerUser *big.Int) (*types.Transaction, error) {
+	return _PuffinClient.contract.Transact(opts, "changeTokensPerUser", _paymentTokenPerUser)
 }
 
-// ChangeUSDPerUser is a paid mutator transaction binding the contract method 0x9dde76fe.
+// ChangeTokensPerUser is a paid mutator transaction binding the contract method 0x3a0237ed.
 //
-// Solidity: function changeUSDPerUser(uint256 _usdPerUser) returns()
-func (_PuffinClient *PuffinClientSession) ChangeUSDPerUser(_usdPerUser *big.Int) (*types.Transaction, error) {
-	return _PuffinClient.Contract.ChangeUSDPerUser(&_PuffinClient.TransactOpts, _usdPerUser)
+// Solidity: function changeTokensPerUser(uint256 _paymentTokenPerUser) returns()
+func (_PuffinClient *PuffinClientSession) ChangeTokensPerUser(_paymentTokenPerUser *big.Int) (*types.Transaction, error) {
+	return _PuffinClient.Contract.ChangeTokensPerUser(&_PuffinClient.TransactOpts, _paymentTokenPerUser)
 }
 
-// ChangeUSDPerUser is a paid mutator transaction binding the contract method 0x9dde76fe.
+// ChangeTokensPerUser is a paid mutator transaction binding the contract method 0x3a0237ed.
 //
-// Solidity: function changeUSDPerUser(uint256 _usdPerUser) returns()
-func (_PuffinClient *PuffinClientTransactorSession) ChangeUSDPerUser(_usdPerUser *big.Int) (*types.Transaction, error) {
-	return _PuffinClient.Contract.ChangeUSDPerUser(&_PuffinClient.TransactOpts, _usdPerUser)
-}
-
-// DelUser is a paid mutator transaction binding the contract method 0x899478a6.
-//
-// Solidity: function delUser() returns()
-func (_PuffinClient *PuffinClientTransactor) DelUser(opts *bind.TransactOpts) (*types.Transaction, error) {
-	return _PuffinClient.contract.Transact(opts, "delUser")
-}
-
-// DelUser is a paid mutator transaction binding the contract method 0x899478a6.
-//
-// Solidity: function delUser() returns()
-func (_PuffinClient *PuffinClientSession) DelUser() (*types.Transaction, error) {
-	return _PuffinClient.Contract.DelUser(&_PuffinClient.TransactOpts)
-}
-
-// DelUser is a paid mutator transaction binding the contract method 0x899478a6.
-//
-// Solidity: function delUser() returns()
-func (_PuffinClient *PuffinClientTransactorSession) DelUser() (*types.Transaction, error) {
-	return _PuffinClient.Contract.DelUser(&_PuffinClient.TransactOpts)
-}
-
-// NewUser is a paid mutator transaction binding the contract method 0x0cb5f653.
-//
-// Solidity: function newUser(address _user) returns()
-func (_PuffinClient *PuffinClientTransactor) NewUser(opts *bind.TransactOpts, _user common.Address) (*types.Transaction, error) {
-	return _PuffinClient.contract.Transact(opts, "newUser", _user)
-}
-
-// NewUser is a paid mutator transaction binding the contract method 0x0cb5f653.
-//
-// Solidity: function newUser(address _user) returns()
-func (_PuffinClient *PuffinClientSession) NewUser(_user common.Address) (*types.Transaction, error) {
-	return _PuffinClient.Contract.NewUser(&_PuffinClient.TransactOpts, _user)
-}
-
-// NewUser is a paid mutator transaction binding the contract method 0x0cb5f653.
-//
-// Solidity: function newUser(address _user) returns()
-func (_PuffinClient *PuffinClientTransactorSession) NewUser(_user common.Address) (*types.Transaction, error) {
-	return _PuffinClient.Contract.NewUser(&_PuffinClient.TransactOpts, _user)
+// Solidity: function changeTokensPerUser(uint256 _paymentTokenPerUser) returns()
+func (_PuffinClient *PuffinClientTransactorSession) ChangeTokensPerUser(_paymentTokenPerUser *big.Int) (*types.Transaction, error) {
+	return _PuffinClient.Contract.ChangeTokensPerUser(&_PuffinClient.TransactOpts, _paymentTokenPerUser)
 }
 
 // NextEpoch is a paid mutator transaction binding the contract method 0xaea0e78b.
@@ -593,6 +613,27 @@ func (_PuffinClient *PuffinClientSession) RenounceOwnership() (*types.Transactio
 // Solidity: function renounceOwnership() returns()
 func (_PuffinClient *PuffinClientTransactorSession) RenounceOwnership() (*types.Transaction, error) {
 	return _PuffinClient.Contract.RenounceOwnership(&_PuffinClient.TransactOpts)
+}
+
+// SetUsers is a paid mutator transaction binding the contract method 0x7bc4099a.
+//
+// Solidity: function setUsers(address _contract, bool status) returns()
+func (_PuffinClient *PuffinClientTransactor) SetUsers(opts *bind.TransactOpts, _contract common.Address, status bool) (*types.Transaction, error) {
+	return _PuffinClient.contract.Transact(opts, "setUsers", _contract, status)
+}
+
+// SetUsers is a paid mutator transaction binding the contract method 0x7bc4099a.
+//
+// Solidity: function setUsers(address _contract, bool status) returns()
+func (_PuffinClient *PuffinClientSession) SetUsers(_contract common.Address, status bool) (*types.Transaction, error) {
+	return _PuffinClient.Contract.SetUsers(&_PuffinClient.TransactOpts, _contract, status)
+}
+
+// SetUsers is a paid mutator transaction binding the contract method 0x7bc4099a.
+//
+// Solidity: function setUsers(address _contract, bool status) returns()
+func (_PuffinClient *PuffinClientTransactorSession) SetUsers(_contract common.Address, status bool) (*types.Transaction, error) {
+	return _PuffinClient.Contract.SetUsers(&_PuffinClient.TransactOpts, _contract, status)
 }
 
 // TransferOwnership is a paid mutator transaction binding the contract method 0xf2fde38b.
