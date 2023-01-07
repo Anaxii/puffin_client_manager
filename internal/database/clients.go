@@ -24,8 +24,8 @@ func (d *Database) GetClients() ([]global.ClientSettings, error) {
 	}
 	defer client.Disconnect(ctx)
 
-	requestsCollection := client.Database("puffin_clients").Collection("settings")
-	cur, err := requestsCollection.Find(context.TODO(), bson.D{{"status", "active"}})
+	clientSettings := client.Database("puffin_clients").Collection("settings")
+	cur, err := clientSettings.Find(context.TODO(), bson.D{{"status", "active"}})
 	if err != nil {
 		log.Error(err)
 	}
@@ -53,8 +53,8 @@ func (d *Database) GetClientUsers(clientUUID int) ([]global.ClientUsers, error) 
 	}
 	defer client.Disconnect(ctx)
 
-	requestsCollection := client.Database("puffin_clients").Collection("users")
-	cur, err := requestsCollection.Find(context.TODO(), bson.D{{"client", clientUUID}})
+	clientSettings := client.Database("puffin_clients").Collection("users")
+	cur, err := clientSettings.Find(context.TODO(), bson.D{{"client", clientUUID}})
 	if err != nil {
 		log.Error(err)
 	}
@@ -81,8 +81,8 @@ func (d *Database) GetOneClient(id primitive.ObjectID) (global.ClientSettings, e
 	}
 	defer client.Disconnect(ctx)
 
-	requestsCollection := client.Database("puffin_clients").Collection("settings")
-	request := requestsCollection.FindOne(context.TODO(), bson.D{{"_id", id}})
+	clientSettings := client.Database("puffin_clients").Collection("settings")
+	request := clientSettings.FindOne(context.TODO(), bson.D{{"_id", id}})
 	var result global.ClientSettings
 	err = request.Decode(&result)
 	if err != nil {
@@ -100,10 +100,10 @@ func (d *Database) UpdateClientSettings(uuid int, key string, val interface{}) e
 	}
 	defer client.Disconnect(ctx)
 
-	settings := client.Database("puffin_clients").Collection("settings")
+	clientSettings := client.Database("puffin_clients").Collection("clientSettings")
 	filter := bson.D{{"UUID", uuid}}
 	update := bson.D{{"$set", bson.D{{key, val}}}}
-	_, err = settings.UpdateOne(context.TODO(), filter, update)
+	_, err = clientSettings.UpdateOne(context.TODO(), filter, update)
 
 	return err
 }
