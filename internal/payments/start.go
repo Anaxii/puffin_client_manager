@@ -33,8 +33,6 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	go p.DB.ClientStream(clientChanges)
 	go p.handleClientChanges(clientChanges, &listeners)
 
-
-
 	// frequently check for new/removed clients
 	// handle clients that are running but no longer need to be
 	// create list of networks and append smart contracts and UUID to it
@@ -88,43 +86,41 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 	for {
 		select {
 		case id := <-clientChanges:
-			go func() {
-				log.Println("handle ", id)
-				updatedClient, err := p.DB.GetOneClient(id)
-				if err != nil {
-					log.Println("Client Deleted")
-					return
+			log.Println("handle ", id)
+			updatedClient, err := p.DB.GetOneClient(id)
+			if err != nil {
+				log.Println("Client Deleted")
+				return
+			}
+
+			_, ok := (*listeners)[updatedClient.UUID]
+			if !ok {
+				log.Println("New client")
+				(*listeners)[updatedClient.UUID] = updatedClient
+			} else {
+				c := (*listeners)[updatedClient.UUID]
+				if updatedClient.Status != c.Status {
+					if updatedClient.Status == "inactive" {
+						log.Println("Client now inactive")
+						// stop listener
+						delete((*listeners), c.UUID)
+
+					} else if updatedClient.Status == "active" {
+						log.Println("client now active")
+						// start listener
+
+					}
 				}
 
-				_, ok := (*listeners)[updatedClient.UUID]
-				if !ok {
-					log.Println("New client")
-					(*listeners)[updatedClient.UUID] = updatedClient
-				} else {
-					c := (*listeners)[updatedClient.UUID]
-					if updatedClient.Status != c.Status {
-						if updatedClient.Status == "inactive" {
-							log.Println("Client now inactive")
-							// stop listener
-							delete((*listeners), c.UUID)
-
-						} else if updatedClient.Status == "active" {
-							log.Println("client now active")
-							// start listener
-
-						}
-					}
-
-					if updatedClient.PuffinClientAddress != c.PuffinClientAddress {
-						log.Println("New KYC addresses")
-						// restart listener
-					}
-
-					(*listeners)[updatedClient.UUID] = updatedClient
+				if updatedClient.PuffinClientAddress != c.PuffinClientAddress {
+					log.Println("New KYC addresses")
+					// restart listener
 				}
 
-				log.Println(listeners, err)
-			}()
+				(*listeners)[updatedClient.UUID] = updatedClient
+			}
+
+			log.Println(listeners, err)
 		}
 	}
 }
