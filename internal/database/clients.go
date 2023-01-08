@@ -44,6 +44,26 @@ func (d *Database) GetClients() ([]global.ClientSettings, error) {
 	return results, nil
 }
 
+func (d *Database) GetCurrentUUID() (int, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(d.DBURI))
+	if err != nil {
+		return -1, err
+	}
+	defer client.Disconnect(ctx)
+
+	clientSettings := client.Database("puffin_clients").Collection("settings")
+	opts := options.FindOne().SetSort(bson.D{{"UUID", -1}})
+
+	request := clientSettings.FindOne(context.TODO(), bson.D{}, opts)
+	var result global.ClientSettings
+	err = request.Decode(&result)
+	if err != nil {
+		return -1, err
+	}
+	return result.UUID, nil
+}
+
 func (d *Database) GetClientUsers(clientUUID int) ([]global.ClientUsers, error) {
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(d.DBURI))
@@ -104,6 +124,21 @@ func (d *Database) UpdateClientSettings(uuid int, key string, val interface{}) e
 	filter := bson.D{{"UUID", uuid}}
 	update := bson.D{{"$set", bson.D{{key, val}}}}
 	_, err = clientSettings.UpdateOne(context.TODO(), filter, update)
+
+	return err
+}
+
+func (d *Database) AddClient(c global.ClientSettings) error {
+
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(d.DBURI))
+	if err != nil {
+		return err
+	}
+	defer client.Disconnect(ctx)
+
+	clientSettings := client.Database("puffin_clients").Collection("clientSettings")
+	_, err = clientSettings.InsertOne(context.TODO(), c)
 
 	return err
 }

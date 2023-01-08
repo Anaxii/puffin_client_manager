@@ -61,5 +61,4 @@ func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, even
 			return
 		}
 	}
-
 }

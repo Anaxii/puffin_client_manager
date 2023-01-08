@@ -2,6 +2,7 @@ package client
 
 import (
 	log "github.com/sirupsen/logrus"
+	"puffin_client_manager/internal/database"
 	"puffin_client_manager/pkg/blockchain"
 	"puffin_client_manager/pkg/db"
 	"puffin_client_manager/pkg/global"
@@ -16,7 +17,7 @@ func QueueNewClient(c global.ClientSettings, id string) {
 	newClientQueue[id] = c
 }
 
-func ListenForNewClients() {
+func ListenForNewClients(d database.Database) {
 	t := util.SecondsTicker(15)
 	for {
 		<-t.C
@@ -29,6 +30,17 @@ func ListenForNewClients() {
 				continue
 			}
 			if isVerified {
+				val, err := d.GetCurrentUUID()
+				if err != nil {
+					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+					continue
+				}
+				newClient.UUID = val + 1
+				err = d.AddClient(newClient)
+				if err != nil {
+					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+					continue
+				}
 				db.Write([]byte("new_client"), []byte(id), []byte("approved"))
 			} else {
 				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
