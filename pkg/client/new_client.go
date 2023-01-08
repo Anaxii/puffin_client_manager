@@ -2,14 +2,18 @@ package client
 
 import (
 	log "github.com/sirupsen/logrus"
+	"puffin_client_manager/pkg/blockchain"
+	"puffin_client_manager/pkg/db"
 	"puffin_client_manager/pkg/global"
 	"puffin_client_manager/pkg/util"
+	"puffin_client_manager/pkg/wallet"
 )
 
-var newClientQueue []global.ClientSettings
+var newClientQueue = map[string]global.ClientSettings{}
 
-func QueueNewClient(c global.ClientSettings) {
-	newClientQueue = append(newClientQueue, c)
+func QueueNewClient(c global.ClientSettings, id string) {
+	db.Write([]byte("new_client"), []byte(id), []byte("pending"))
+	newClientQueue[id] = c
 }
 
 func ListenForNewClients() {
@@ -17,27 +21,44 @@ func ListenForNewClients() {
 	for {
 		<-t.C
 		t = util.SecondsTicker(15)
-		for _, newClient := range newClientQueue {
-			isVerified, err := verifyClientInfo(newClient)
+		for id, newClient := range newClientQueue {
+			db.Write([]byte("new_client"), []byte(id), []byte("verifying"))
+			isVerified, reason, err := verifyClientInfo(newClient)
 			if err != nil {
 				log.Error(err)
 				continue
 			}
 			if isVerified {
-				// give uuid
-				// add to db
+				db.Write([]byte("new_client"), []byte(id), []byte("approved"))
+			} else {
+				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
 			}
 		}
 	}
 
 }
 
-func verifyClientInfo(c global.ClientSettings) (bool, error) {
-	// verify website
-	// verify rpc url
-	// verify ws url
-	// verify chain id
-	// verify geo/kyc and client addresses are deployed and can be access with rpc
-	return true, nil
+func verifyClientInfo(c global.ClientSettings) (bool, string, error) {
+	_, err := wallet.Block(c.RPCURL)
+	if err != nil {
+		return false, "invalid rpc", err
+	}
+	_, err = wallet.Block(c.WSURL)
+	if err != nil {
+		return false, "invalid websocket url", err
+	}
+	if c.PuffinGeoAddress != "" {
+		err = blockchain.GetTier("0x56A52b69179fB4BF0d0Bc9aefC340E63c36d3895", c.PuffinGeoAddress, c.RPCURL)
+	} else {
+		err = blockchain.GetTier("0x56A52b69179fB4BF0d0Bc9aefC340E63c36d3895", c.PuffinKYCAddress, c.RPCURL)
+	}
+	if err != nil {
+		return false, "geo or kyc contract could not be verified", err
+	}
+	err = blockchain.GetEpoch(c.PuffinClientAddress, c.RPCURL)
+	if err != nil {
+		return false, "PuffinClient contract could not be verified", err
+	}
+	return true, "", nil
 }
 
