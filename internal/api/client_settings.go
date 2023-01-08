@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"puffin_client_manager/pkg/client"
 	"puffin_client_manager/pkg/global"
+	"puffin_client_manager/pkg/util"
 )
 
 func newClient(w http.ResponseWriter, r *http.Request) {
@@ -18,9 +19,10 @@ func newClient(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client.QueueNewClient(requestBody)
+	id := util.RandStringRunes(20)
+	client.QueueNewClient(requestBody, id)
 
-	res, _ := json.Marshal(map[string]string{"status": "success"})
+	res, _ := json.Marshal(map[string]string{"status": "success", "id": id})
 	w.Write(res)
 	return
 }

@@ -21,7 +21,8 @@ func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, even
 			"client":   clientUUID,
 			"contract": _contractAddress,
 			"location": "blockchain/contractInteraction/listen_to_events.go:ListenToEvents:19",
-		}).Fatal(err)
+		}).Error(err)
+		return
 	}
 
 	contractAddress := common.HexToAddress(_contractAddress)
