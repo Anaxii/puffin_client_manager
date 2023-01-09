@@ -11,6 +11,15 @@ import (
 )
 
 var newClientQueue = map[string]global.ClientSettings{}
+var clients = []global.ClientSettings{}
+
+func GetClients() []global.ClientSettings {
+	return clients
+}
+
+func SetClients(c []global.ClientSettings) {
+	clients = c
+}
 
 func QueueNewClient(c global.ClientSettings, id string) {
 	db.Write([]byte("new_client"), []byte(id), []byte("pending"))

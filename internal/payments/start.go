@@ -7,14 +7,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"puffin_client_manager/internal/database"
 	"puffin_client_manager/pkg/abi"
+	"puffin_client_manager/pkg/client"
 	"puffin_client_manager/pkg/global"
 	"strings"
 	"time"
 )
 
 type PaymentsHandler struct {
-	Config global.Config
-	DB     database.Database
+	Config  global.Config
+	DB      database.Database
 }
 
 func (p *PaymentsHandler) StartPaymentsHandler() {
@@ -24,21 +25,26 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 		log.Fatal("could not get clients")
 	}
 
+	go client.SetClients(clients)
+
 	listeners := map[int]global.ClientSettings{}
+	listenerStatus := map[int]bool{}
 	clientChanges := make(chan primitive.ObjectID)
 
 	for _, v := range clients {
 		listeners[v.UUID] = v
+		listenerStatus[v.UUID] = true
 	}
-
-	go p.DB.ClientStream(clientChanges)
-	go p.handleClientChanges(clientChanges, &listeners)
 
 	event := make(chan PaymentsLog)
 
+	go p.DB.ClientStream(clientChanges)
+	go p.handleClientChanges(&clients, clientChanges, &listeners, event, &listenerStatus)
+
+
 	log.Info("Starting event listeners")
 	for _, v := range listeners {
-		go ListenForEvents(v.WSURL, v.UUID, v.PuffinClientAddress, event)
+		go ListenForEvents(v.WSURL, v.UUID, v.PuffinClientAddress, event, &listenerStatus)
 	}
 
 	clientABI, _ := ethABI.JSON(strings.NewReader(abi.PuffinClientABI))
@@ -69,7 +75,7 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	}
 }
 
-func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.ObjectID, listeners *map[int]global.ClientSettings) {
+func (p *PaymentsHandler) handleClientChanges(clients *[]global.ClientSettings, clientChanges chan primitive.ObjectID, listeners *map[int]global.ClientSettings, event chan PaymentsLog, listenerStatus *map[int]bool) {
 	for {
 		select {
 		case id := <-clientChanges:
@@ -84,18 +90,22 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 			if !ok {
 				log.Println("New client")
 				(*listeners)[updatedClient.UUID] = updatedClient
+				(*clients)[updatedClient.UUID] = updatedClient
+				client.SetClients(*clients)
+				go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
 			} else {
 				c := (*listeners)[updatedClient.UUID]
 				if updatedClient.Status != c.Status {
 					if updatedClient.Status == "inactive" {
 						log.Println("Client now inactive")
 						// stop listener
+						(*listenerStatus)[c.UUID] = false
 						delete(*listeners, c.UUID)
 
 					} else if updatedClient.Status == "active" {
 						log.Println("client now active")
-						// start listener
-
+						(*listenerStatus)[c.UUID] = true
+						go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
 					}
 				}
 
@@ -103,7 +113,9 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 					log.Println("New KYC addresses")
 					// restart listener
 				}
+				(*clients)[updatedClient.UUID] = updatedClient
 
+				client.SetClients(*clients)
 				(*listeners)[updatedClient.UUID] = updatedClient
 			}
 
@@ -111,4 +123,3 @@ func (p *PaymentsHandler) handleClientChanges(clientChanges chan primitive.Objec
 		}
 	}
 }
-

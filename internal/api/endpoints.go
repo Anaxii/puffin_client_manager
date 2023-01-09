@@ -51,11 +51,13 @@ func clientRequestStatus(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func updateCountry(w http.ResponseWriter, r *http.Request) {
+func updateCountries(w http.ResponseWriter, r *http.Request) {
 	type clientSettings struct {
 		Countries map[int][]string `json:"countries"`
 		UUID      int              `json:"UUID"`
 	}
+
+
 
 	res, _ := json.Marshal(map[string]string{"error": "country already added"})
 	w.Write(res)

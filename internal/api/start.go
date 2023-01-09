@@ -18,7 +18,7 @@ func StartAPI(port string) {
 
 	r.HandleFunc("/client/new", newClient).Methods("POST")
 	r.HandleFunc("/client/new/status", clientRequestStatus).Methods("POST")
-	r.HandleFunc("/client/countries/update", updateCountry).Methods("POST")
+	r.HandleFunc("/client/countries/update", updateCountries).Methods("POST")
 	r.HandleFunc("/client/payments/next", paymentExpiration).Methods("GET")
 
 	r.Use(mux.CORSMethodMiddleware(r))

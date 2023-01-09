@@ -14,7 +14,7 @@ type PaymentsLog struct {
 	ClientUUID int
 }
 
-func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, events chan PaymentsLog) {
+func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, events chan PaymentsLog, active *map[int]bool) {
 	client, err := ethclient.Dial(wsurl)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -44,6 +44,9 @@ func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, even
 		for {
 			select {
 			case ev := <-event:
+				if !(*active)[clientUUID] {
+					return
+				}
 				events <- PaymentsLog{ClientUUID: clientUUID, Log: ev}
 			}
 		}
@@ -57,7 +60,7 @@ func ListenForEvents(wsurl string, clientUUID int, _contractAddress string, even
 				"contract": _contractAddress,
 				"location": "blockchain/contractInteraction/listen_to_events.go:ListenToEvents:44",
 			}).Error("Event listener died, rebooting |", err)
-			go ListenForEvents(wsurl, clientUUID, _contractAddress, events)
+			go ListenForEvents(wsurl, clientUUID, _contractAddress, events, active)
 			return
 		}
 	}
