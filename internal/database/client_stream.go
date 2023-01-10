@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"sync"
 
@@ -20,7 +19,6 @@ func iterateChangeStream(clientChanges chan primitive.ObjectID, routineCtx conte
 			panic(err)
 		}
 		id := data["documentKey"].(primitive.M)["_id"].(primitive.ObjectID)
-		log.Println(id)
 		clientChanges <- id
 	}
 }

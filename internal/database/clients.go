@@ -137,7 +137,7 @@ func (d *Database) AddClient(c global.ClientSettings) error {
 	}
 	defer client.Disconnect(ctx)
 
-	clientSettings := client.Database("puffin_clients").Collection("clientSettings")
+	clientSettings := client.Database("puffin_clients").Collection("settings")
 	_, err = clientSettings.InsertOne(context.TODO(), c)
 
 	return err

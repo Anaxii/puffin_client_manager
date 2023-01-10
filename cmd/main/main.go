@@ -23,5 +23,5 @@ func main() {
 
 	go paymentsHandler.StartPaymentsHandler()
 	go client.ListenForNewClients(paymentsHandler.DB)
-	api.StartAPI("8080")
+	api.StartAPI("8082")
 }

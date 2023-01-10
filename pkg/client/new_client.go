@@ -11,13 +11,13 @@ import (
 )
 
 var newClientQueue = map[string]global.ClientSettings{}
-var clients = []global.ClientSettings{}
+var clients = map[int]global.ClientSettings{}
 
-func GetClients() []global.ClientSettings {
+func GetClients() map[int]global.ClientSettings {
 	return clients
 }
 
-func SetClients(c []global.ClientSettings) {
+func SetClients(c map[int]global.ClientSettings) {
 	clients = c
 }
 
@@ -34,25 +34,33 @@ func ListenForNewClients(d database.Database) {
 		for id, newClient := range newClientQueue {
 			db.Write([]byte("new_client"), []byte(id), []byte("verifying"))
 			isVerified, reason, err := verifyClientInfo(newClient)
+			log.Println(isVerified, reason)
 			if err != nil {
 				log.Error(err)
+				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+				delete(newClientQueue, id)
 				continue
 			}
 			if isVerified {
 				val, err := d.GetCurrentUUID()
 				if err != nil {
 					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+					delete(newClientQueue, id)
 					continue
 				}
+				log.Println(val)
 				newClient.UUID = val + 1
 				err = d.AddClient(newClient)
 				if err != nil {
 					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+					delete(newClientQueue, id)
 					continue
 				}
 				db.Write([]byte("new_client"), []byte(id), []byte("approved"))
+				delete(newClientQueue, id)
 			} else {
 				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
+				delete(newClientQueue, id)
 			}
 		}
 	}

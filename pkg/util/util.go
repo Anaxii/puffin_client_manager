@@ -40,5 +40,5 @@ func RandStringRunes(n int) string {
 }
 
 func SecondsTicker(seconds int) *time.Ticker {
-	return time.NewTicker(time.Second * time.Duration(seconds-time.Now().Second()))
+	return time.NewTicker(time.Second * time.Duration(seconds))
 }

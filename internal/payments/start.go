@@ -20,9 +20,14 @@ type PaymentsHandler struct {
 
 func (p *PaymentsHandler) StartPaymentsHandler() {
 
-	clients, err := p.DB.GetClients()
+	var clients = map[int]global.ClientSettings{}
+	_clients, err := p.DB.GetClients()
 	if err != nil {
 		log.Fatal("could not get clients")
+	}
+
+	for _, v := range _clients {
+		clients[v.UUID] = v
 	}
 
 	go client.SetClients(clients)
@@ -75,7 +80,7 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	}
 }
 
-func (p *PaymentsHandler) handleClientChanges(clients *[]global.ClientSettings, clientChanges chan primitive.ObjectID, listeners *map[int]global.ClientSettings, event chan PaymentsLog, listenerStatus *map[int]bool) {
+func (p *PaymentsHandler) handleClientChanges(clients *map[int]global.ClientSettings, clientChanges chan primitive.ObjectID, listeners *map[int]global.ClientSettings, event chan PaymentsLog, listenerStatus *map[int]bool) {
 	for {
 		select {
 		case id := <-clientChanges:
