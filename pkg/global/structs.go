@@ -36,6 +36,7 @@ type ClientSettings struct {
 	PaymentExpiration           int                `json:"payment_expiration" bson:"payment_expiration"`
 	BlockedCountries            map[int64][]string `json:"blocked_countries" bson:"blocked_countries"`
 	WSURL                       string             `json:"ws_url" bson:"ws_url"`
+	Email                       string             `json:"email" bson:"email"`
 }
 
 type Config struct {
