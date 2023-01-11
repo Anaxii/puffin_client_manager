@@ -8,6 +8,7 @@ import (
 	"puffin_client_manager/pkg/db"
 	"puffin_client_manager/pkg/global"
 	"puffin_client_manager/pkg/util"
+	"strconv"
 )
 
 func newClient(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +48,37 @@ func clientRequestStatus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, _ := json.Marshal(map[string]string{"status": string(status)})
+	w.Write(res)
+	return
+}
+
+func getClient(w http.ResponseWriter, r *http.Request) {
+	id := ""
+	_, ok := r.URL.Query()["id"]; if ok {
+		id = r.URL.Query()["id"][0]
+	} else {
+		res, _ := json.Marshal(map[string]interface{}{"error": "user did not supply wallet address"})
+		w.Write(res)
+		return
+	}
+	_id, err := strconv.Atoi(id)
+	if err != nil {
+		res, _ := json.Marshal(map[string]interface{}{"error": "invalid id"})
+		w.Write(res)
+		return
+	}
+
+	clients := client.GetClients()
+
+	for _, v := range clients {
+		if v.UUID == _id {
+			res, _ := json.Marshal(v)
+			w.Write(res)
+			return
+		}
+	}
+
+	res, _ := json.Marshal(map[string]string{"error": "invalid id"})
 	w.Write(res)
 	return
 }
