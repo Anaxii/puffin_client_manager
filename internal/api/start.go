@@ -18,6 +18,8 @@ func StartAPI(port string) {
 
 	r.HandleFunc("/client/new", newClient).Methods("POST")
 	r.HandleFunc("/client", getClient).Methods("GET")
+	r.HandleFunc("/client/status", dAppStatus).Methods("GET")
+
 	r.HandleFunc("/client/new/status", clientRequestStatus).Methods("POST")
 	r.HandleFunc("/client/countries/update", updateCountries).Methods("POST")
 	r.HandleFunc("/client/payments/next", paymentExpiration).Methods("GET")

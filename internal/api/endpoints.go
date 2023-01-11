@@ -101,3 +101,24 @@ func paymentExpiration(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 	return
 }
+
+func dAppStatus(w http.ResponseWriter, r *http.Request) {
+	id := ""
+	_, ok := r.URL.Query()["id"]
+	if ok {
+		id = r.URL.Query()["id"][0]
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	status, err := db.Read([]byte("new_client"), []byte(id))
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	res, _ := json.Marshal(map[string]interface{}{"status": string(status)})
+	w.Write(res)
+	return
+}

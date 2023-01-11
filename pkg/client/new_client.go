@@ -34,14 +34,8 @@ func ListenForNewClients(d database.Database) {
 		t = util.SecondsTicker(15)
 		for id, newClient := range newClientQueue {
 			db.Write([]byte("new_client"), []byte(id), []byte("verifying"))
-			isVerified, reason, err := verifyClientInfo(newClient)
-			log.Println(isVerified, reason)
-			if err != nil {
-				log.Error(err)
-				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
-				delete(newClientQueue, id)
-				continue
-			}
+			isVerified, reason, _ := verifyClientInfo(newClient)
+			log.Println(id, isVerified, reason)
 			if isVerified {
 				val, err := d.GetCurrentUUID()
 				if err != nil {
