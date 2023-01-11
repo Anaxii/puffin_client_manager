@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"puffin_client_manager/internal/database"
 	"puffin_client_manager/pkg/blockchain"
@@ -56,7 +57,7 @@ func ListenForNewClients(d database.Database) {
 					delete(newClientQueue, id)
 					continue
 				}
-				db.Write([]byte("new_client"), []byte(id), []byte("approved"))
+				db.Write([]byte("new_client"), []byte(id), []byte("approved | UUID: " + fmt.Sprintf("%v", newClient.UUID)))
 				delete(newClientQueue, id)
 			} else {
 				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
