@@ -14,7 +14,7 @@ func GetTier(walletAddress string, contractAddress string, rpcurl string) error 
 		return err
 	}
 
-	core, err := abi.NewPuffinStatus(common.HexToAddress(contractAddress), conn)
+	core, err := abi.NewPuffinUsers(common.HexToAddress(contractAddress), conn)
 	if err != nil {
 		log.WithFields(log.Fields{"error": err.Error(), "file": "Blockchain:CheckIfIsApproved"}).Error("Failed to instantiate PuffinApprovedAccounts contract")
 		return err
