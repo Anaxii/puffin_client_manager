@@ -99,6 +99,7 @@ func (p *PaymentsHandler) handleClientChanges(clients *map[int]global.ClientSett
 				client.SetClients(*clients)
 				go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
 			} else {
+				(*clients)[updatedClient.UUID] = updatedClient
 				c := (*listeners)[updatedClient.UUID]
 				if updatedClient.Status != c.Status {
 					if updatedClient.Status == "inactive" {
