@@ -71,7 +71,7 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 				increment := 28 * 24 * int(time.Hour.Seconds())
 				temp.PaymentExpiration += increment
 				listeners[e.ClientUUID] = temp
-				err = p.DB.UpdateClientSettings(e.ClientUUID, "payment_expiration", listeners[e.ClientUUID])
+				err = p.DB.UpdateClientSettings(e.ClientUUID, "payment_expiration", temp.PaymentExpiration)
 				if err != nil {
 					log.WithFields(log.Fields{"error": err}).Error("Error updating client settings payment_expiration")
 				}
@@ -80,56 +80,70 @@ func (p *PaymentsHandler) StartPaymentsHandler() {
 	}
 }
 
-func (p *PaymentsHandler) handleClientChanges(clients *map[int]global.ClientSettings, clientChanges chan primitive.ObjectID, listeners *map[int]global.ClientSettings, event chan PaymentsLog, listenerStatus *map[int]bool) {
+func (p *PaymentsHandler) handleClientChanges(
+	clients *map[int]global.ClientSettings,
+	clientChanges chan primitive.ObjectID,
+	listeners *map[int]global.ClientSettings,
+	event chan PaymentsLog,
+	listenerStatus *map[int]bool) {
 	for {
 		select {
 		case id := <-clientChanges:
-			log.Println("handle ", id)
+			log.Info("handle change:", id)
 			updatedClient, err := p.DB.GetOneClient(id)
+
 			if err != nil {
 				delete(*listeners, updatedClient.UUID)
 				delete(*clients, updatedClient.UUID)
 				(*listenerStatus)[updatedClient.UUID] = false
 				client.SetClients(*clients)
-				log.Println("Client Deleted")
+				log.Info("client deleted:", id)
 				return
 			}
 
-			_, ok := (*listeners)[updatedClient.UUID]
-			if !ok {
-				log.Println("New client")
-				(*listeners)[updatedClient.UUID] = updatedClient
-				(*clients)[updatedClient.UUID] = updatedClient
-				client.SetClients(*clients)
-				go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
-			} else {
-				(*clients)[updatedClient.UUID] = updatedClient
-				c := (*listeners)[updatedClient.UUID]
-				if updatedClient.Status != c.Status {
-					if updatedClient.Status == "inactive" {
-						log.Println("Client now inactive")
-						// stop listener
-						(*listenerStatus)[c.UUID] = false
-						delete(*listeners, c.UUID)
-
-					} else if updatedClient.Status == "active" {
-						log.Println("client now active")
-						(*listenerStatus)[c.UUID] = true
-						go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
-					}
-				}
-
-				if updatedClient.PuffinClientAddress != c.PuffinClientAddress {
-					log.Println("New KYC addresses")
-					go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
-				}
-				(*clients)[updatedClient.UUID] = updatedClient
-
-				client.SetClients(*clients)
-				(*listeners)[updatedClient.UUID] = updatedClient
-			}
-
-			log.Println(listeners, err)
+			clientChange(updatedClient, clients, listeners, event, listenerStatus)
 		}
+	}
+}
+
+func clientChange(
+	updatedClient global.ClientSettings,
+	clients *map[int]global.ClientSettings,
+	listeners *map[int]global.ClientSettings,
+	event chan PaymentsLog,
+	listenerStatus *map[int]bool) {
+
+	_, ok := (*listeners)[updatedClient.UUID]
+	if !ok {
+		log.Info("new client:", updatedClient.UUID)
+		(*listeners)[updatedClient.UUID] = updatedClient
+		(*clients)[updatedClient.UUID] = updatedClient
+		client.SetClients(*clients)
+		go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
+	} else {
+		(*clients)[updatedClient.UUID] = updatedClient
+		c := (*listeners)[updatedClient.UUID]
+		if updatedClient.Status != c.Status {
+			if updatedClient.Status == "inactive" {
+				log.Info("client now inactive:", updatedClient.UUID)
+				// stop listener
+				(*listenerStatus)[c.UUID] = false
+				delete(*listeners, c.UUID)
+
+			} else if updatedClient.Status == "active" {
+				log.Info("client now active:", updatedClient.UUID)
+				(*listenerStatus)[c.UUID] = true
+				go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
+			}
+		}
+
+		if updatedClient.PuffinClientAddress != c.PuffinClientAddress {
+			log.Info("client updated kyc address:", updatedClient.UUID)
+			go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
+		}
+		(*clients)[updatedClient.UUID] = updatedClient
+		(*listeners)[updatedClient.UUID] = updatedClient
+
+		client.SetClients(*clients)
 	}
 }
