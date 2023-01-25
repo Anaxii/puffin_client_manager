@@ -87,6 +87,10 @@ func (p *PaymentsHandler) handleClientChanges(clients *map[int]global.ClientSett
 			log.Println("handle ", id)
 			updatedClient, err := p.DB.GetOneClient(id)
 			if err != nil {
+				delete(*listeners, updatedClient.UUID)
+				delete(*clients, updatedClient.UUID)
+				(*listenerStatus)[updatedClient.UUID] = false
+				client.SetClients(*clients)
 				log.Println("Client Deleted")
 				return
 			}
@@ -117,7 +121,7 @@ func (p *PaymentsHandler) handleClientChanges(clients *map[int]global.ClientSett
 
 				if updatedClient.PuffinClientAddress != c.PuffinClientAddress {
 					log.Println("New KYC addresses")
-					// restart listener
+					go ListenForEvents(updatedClient.WSURL, updatedClient.UUID, updatedClient.PuffinClientAddress, event, listenerStatus)
 				}
 				(*clients)[updatedClient.UUID] = updatedClient
 
