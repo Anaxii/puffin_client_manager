@@ -27,39 +27,42 @@ func QueueNewClient(c global.ClientSettings, id string) {
 	newClientQueue[id] = c
 }
 
-func ListenForNewClients(d database.Database) {
+func StartClientQueueTicker(d database.Database) {
 	t := util.SecondsTicker(15)
 	for {
 		<-t.C
+		checkClientQueue(d)
 		t = util.SecondsTicker(15)
-		for id, newClient := range newClientQueue {
-			db.Write([]byte("new_client"), []byte(id), []byte("verifying"))
-			isVerified, reason, _ := verifyClientInfo(newClient)
-			log.Println(id, isVerified, reason)
-			if isVerified {
-				val, err := d.GetCurrentUUID()
-				if err != nil {
-					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
-					delete(newClientQueue, id)
-					continue
-				}
-				log.Println(val)
-				newClient.UUID = val + 1
-				err = d.AddClient(newClient)
-				if err != nil {
-					db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
-					delete(newClientQueue, id)
-					continue
-				}
-				db.Write([]byte("new_client"), []byte(id), []byte("approved | UUID: " + fmt.Sprintf("%v", newClient.UUID)))
+	}
+}
+
+func checkClientQueue(d database.Database) {
+	for id, newClient := range newClientQueue {
+		db.Write([]byte("new_client"), []byte(id), []byte("verifying"))
+		isVerified, reason, _ := verifyClientInfo(newClient)
+		log.Println(id, isVerified, reason)
+		if isVerified {
+			val, err := d.GetCurrentUUID()
+			if err != nil {
+				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
 				delete(newClientQueue, id)
-			} else {
-				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
-				delete(newClientQueue, id)
+				continue
 			}
+			log.Println(val)
+			newClient.UUID = val + 1
+			err = d.AddClient(newClient)
+			if err != nil {
+				db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: Internal error"))
+				delete(newClientQueue, id)
+				continue
+			}
+			db.Write([]byte("new_client"), []byte(id), []byte("approved | UUID: " + fmt.Sprintf("%v", newClient.UUID)))
+			delete(newClientQueue, id)
+		} else {
+			db.Write([]byte("new_client"), []byte(id), []byte("denied | reason: " + reason))
+			delete(newClientQueue, id)
 		}
 	}
-
 }
 
 func verifyClientInfo(c global.ClientSettings) (bool, string, error) {

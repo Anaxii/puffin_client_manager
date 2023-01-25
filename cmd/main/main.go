@@ -22,6 +22,6 @@ func main() {
 	}
 
 	go paymentsHandler.StartPaymentsHandler()
-	go client.ListenForNewClients(paymentsHandler.DB)
+	go client.StartClientQueueTicker(paymentsHandler.DB)
 	api.StartAPI("8082")
 }
